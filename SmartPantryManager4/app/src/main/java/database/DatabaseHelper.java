@@ -1,4 +1,4 @@
-package com.example.smartpantrymanager.database;
+package database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
