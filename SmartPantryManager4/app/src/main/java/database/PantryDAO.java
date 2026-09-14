@@ -70,6 +70,43 @@ public class PantryDAO {
         return pantryItems;
     }
 
+    public List<PantryItem> getExpiringSoonItems() {
+        List<PantryItem> pantryItems = new ArrayList<>();
+
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                "pantry_items",
+                null,
+                "expiry_date <= date('now', '+7 days')",
+                null,
+                null,
+                null,
+                "expiry_date ASC"
+        );
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            double quantity = cursor.getDouble(cursor.getColumnIndexOrThrow("quantity"));
+            String unit = cursor.getString(cursor.getColumnIndexOrThrow("unit"));
+            String expiryDate = cursor.getString(cursor.getColumnIndexOrThrow("expiry_date"));
+
+            pantryItems.add(new PantryItem(
+                    id,
+                    name,
+                    quantity,
+                    unit,
+                    expiryDate
+            ));
+        }
+
+        cursor.close();
+        db.close();
+
+        return pantryItems;
+    }
+
     public int updatePantryItem(PantryItem item) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
