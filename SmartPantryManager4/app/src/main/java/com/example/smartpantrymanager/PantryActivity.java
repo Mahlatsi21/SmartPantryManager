@@ -33,18 +33,30 @@ public class PantryActivity extends AppCompatActivity {
 
         Button btnAddIngredient = findViewById(R.id.btnAddIngredient);
         Button btnExpiringSoon = findViewById(R.id.btnExpiringSoon);
+        Button btnRecipeSuggestions = findViewById(R.id.btnRecipeSuggestions);
 
         pantryDAO = new PantryDAO(this);
 
         recyclerPantry.setLayoutManager(new LinearLayoutManager(this));
 
         btnAddIngredient.setOnClickListener(v -> {
-            Intent intent = new Intent(PantryActivity.this, AddIngredientActivity.class);
+            Intent intent = new Intent(
+                    PantryActivity.this,
+                    AddIngredientActivity.class
+            );
             startActivity(intent);
         });
 
         btnExpiringSoon.setOnClickListener(v -> {
             loadExpiringSoonItems();
+        });
+
+        btnRecipeSuggestions.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    PantryActivity.this,
+                    RecipeSuggestionsActivity.class
+            );
+            startActivity(intent);
         });
 
         loadPantryItems();
@@ -72,10 +84,14 @@ public class PantryActivity extends AppCompatActivity {
         recyclerPantry.setAdapter(pantryAdapter);
 
         if (pantryItems.isEmpty()) {
-            txtEmptyMessage.setText("No ingredients expiring within 7 days.");
+            txtEmptyMessage.setText(
+                    "No ingredients expiring within 7 days."
+            );
             txtEmptyMessage.setVisibility(View.VISIBLE);
         } else {
-            txtEmptyMessage.setText("Ingredients expiring within 7 days:");
+            txtEmptyMessage.setText(
+                    "Ingredients expiring within 7 days:"
+            );
             txtEmptyMessage.setVisibility(View.VISIBLE);
         }
     }

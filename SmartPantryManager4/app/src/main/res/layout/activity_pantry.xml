@@ -27,6 +27,13 @@
         android:layout_marginTop="8dp"
         android:text="Expiring Soon" />
 
+    <Button
+        android:id="@+id/btnRecipeSuggestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Recipe Suggestions" />
+
     <TextView
         android:id="@+id/txtEmptyMessage"
         android:layout_width="match_parent"
