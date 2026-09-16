@@ -1,5 +1,4 @@
-
-        package database;
+package database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -230,15 +229,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         addRecipeIfMissing(
                 db,
-                "Rice, Chicken and Tomato",
-                "Cook the rice until tender. Cook the chicken thoroughly, prepare the tomato and combine all ingredients.",
-                new String[]{"Rice", "Chicken", "Tomato"},
-                new double[]{1, 1, 1},
-                new String[]{"kg", "item", "item"}
-        );
-
-        addRecipeIfMissing(
-                db,
                 "Sweet Milk",
                 "Warm the milk gently and add the sugar. Stir until the sugar dissolves and serve.",
                 new String[]{"Milk", "Sugar"},
@@ -414,4 +404,3 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 }
-
