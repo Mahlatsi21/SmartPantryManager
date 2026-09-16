@@ -6,13 +6,13 @@ public class Recipe {
 
     private int id;
     private String name;
-    private List<String> ingredients;
+    private List<RecipeIngredient> ingredients;
     private String instructions;
 
     public Recipe(
             int id,
             String name,
-            List<String> ingredients,
+            List<RecipeIngredient> ingredients,
             String instructions
     ) {
         this.id = id;
@@ -29,7 +29,7 @@ public class Recipe {
         return name;
     }
 
-    public List<String> getIngredients() {
+    public List<RecipeIngredient> getIngredients() {
         return ingredients;
     }
 

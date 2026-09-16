@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Recipe;
+import model.RecipeIngredient;
 
 public class RecipeDAO {
 
@@ -45,11 +46,15 @@ public class RecipeDAO {
                     recipeCursor.getColumnIndexOrThrow("instructions")
             );
 
-            List<String> ingredients = new ArrayList<>();
+            List<RecipeIngredient> ingredients = new ArrayList<>();
 
             Cursor ingredientCursor = db.query(
                     "recipe_ingredients",
-                    new String[]{"ingredient_name"},
+                    new String[]{
+                            "ingredient_name",
+                            "required_quantity",
+                            "unit"
+                    },
                     "recipe_id = ?",
                     new String[]{String.valueOf(recipeId)},
                     null,
@@ -59,20 +64,40 @@ public class RecipeDAO {
 
             while (ingredientCursor.moveToNext()) {
                 String ingredientName = ingredientCursor.getString(
-                        ingredientCursor.getColumnIndexOrThrow("ingredient_name")
+                        ingredientCursor.getColumnIndexOrThrow(
+                                "ingredient_name"
+                        )
                 );
 
-                ingredients.add(ingredientName);
+                double requiredQuantity = ingredientCursor.getDouble(
+                        ingredientCursor.getColumnIndexOrThrow(
+                                "required_quantity"
+                        )
+                );
+
+                String unit = ingredientCursor.getString(
+                        ingredientCursor.getColumnIndexOrThrow("unit")
+                );
+
+                ingredients.add(
+                        new RecipeIngredient(
+                                ingredientName,
+                                requiredQuantity,
+                                unit
+                        )
+                );
             }
 
             ingredientCursor.close();
 
-            recipes.add(new Recipe(
-                    recipeId,
-                    name,
-                    ingredients,
-                    instructions
-            ));
+            recipes.add(
+                    new Recipe(
+                            recipeId,
+                            name,
+                            ingredients,
+                            instructions
+                    )
+            );
         }
 
         recipeCursor.close();

@@ -1,5 +1,6 @@
 package model;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartpantrymanager.R;
+import com.example.smartpantrymanager.RecipeDetailActivity;
 
 import java.util.List;
 
@@ -41,14 +43,45 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         holder.txtRecipeName.setText(recipe.getName());
 
-        String ingredients = "Ingredients: "
-                + String.join(", ", recipe.getIngredients());
+        StringBuilder ingredientsText =
+                new StringBuilder("Ingredients: ");
 
-        holder.txtRecipeIngredients.setText(ingredients);
+        for (int i = 0; i < recipe.getIngredients().size(); i++) {
+
+            RecipeIngredient ingredient =
+                    recipe.getIngredients().get(i);
+
+            ingredientsText.append(
+                    ingredient.getName()
+            );
+
+            if (i < recipe.getIngredients().size() - 1) {
+                ingredientsText.append(", ");
+            }
+        }
+
+        holder.txtRecipeIngredients.setText(
+                ingredientsText.toString()
+        );
 
         holder.txtRecipeInstructions.setText(
                 "Instructions: " + recipe.getInstructions()
         );
+
+        holder.itemView.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    v.getContext(),
+                    RecipeDetailActivity.class
+            );
+
+            intent.putExtra(
+                    "recipe_id",
+                    recipe.getId()
+            );
+
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override
@@ -65,9 +98,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         public RecipeViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            txtRecipeName = itemView.findViewById(R.id.txtRecipeName);
+            txtRecipeName =
+                    itemView.findViewById(R.id.txtRecipeName);
+
             txtRecipeIngredients =
                     itemView.findViewById(R.id.txtRecipeIngredients);
+
             txtRecipeInstructions =
                     itemView.findViewById(R.id.txtRecipeInstructions);
         }

@@ -7,10 +7,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import database.PantryDAO;
 import model.PantryItem;
 
 public class AddIngredientActivity extends AppCompatActivity {
+
 
     private EditText edtIngredientName;
     private EditText edtQuantity;
@@ -45,36 +51,55 @@ public class AddIngredientActivity extends AppCompatActivity {
     }
 
     private void loadIngredientForEditing() {
-        edtIngredientName.setText(getIntent().getStringExtra("name"));
+        edtIngredientName.setText(
+                getIntent().getStringExtra("name")
+        );
 
-        double quantity = getIntent().getDoubleExtra("quantity", 0);
-        edtQuantity.setText(String.valueOf(quantity));
+        double quantity = getIntent().getDoubleExtra(
+                "quantity",
+                0
+        );
 
-        edtUnit.setText(getIntent().getStringExtra("unit"));
-        edtExpiryDate.setText(getIntent().getStringExtra("expiryDate"));
+        edtQuantity.setText(
+                String.valueOf(quantity)
+        );
+
+        edtUnit.setText(
+                getIntent().getStringExtra("unit")
+        );
+
+        edtExpiryDate.setText(
+                getIntent().getStringExtra("expiryDate")
+        );
     }
 
     private void saveIngredient() {
-        String name = edtIngredientName.getText().toString().trim();
-        String quantityText = edtQuantity.getText().toString().trim();
-        String unit = edtUnit.getText().toString().trim();
-        String expiryDate = edtExpiryDate.getText().toString().trim();
+
+        String name =
+                edtIngredientName.getText().toString().trim();
+
+        String quantityText =
+                edtQuantity.getText().toString().trim();
+
+        String unit =
+                edtUnit.getText().toString().trim();
+
+        String expiryDate =
+                edtExpiryDate.getText().toString().trim();
 
         if (name.isEmpty()) {
-            edtIngredientName.setError("Enter an ingredient name");
+            edtIngredientName.setError(
+                    "Enter an ingredient name"
+            );
             edtIngredientName.requestFocus();
             return;
         }
 
         if (quantityText.isEmpty()) {
-            edtQuantity.setError("Enter a quantity");
+            edtQuantity.setError(
+                    "Enter a quantity"
+            );
             edtQuantity.requestFocus();
-            return;
-        }
-
-        if (unit.isEmpty()) {
-            edtUnit.setError("Enter a unit");
-            edtUnit.requestFocus();
             return;
         }
 
@@ -83,14 +108,36 @@ public class AddIngredientActivity extends AppCompatActivity {
         try {
             quantity = Double.parseDouble(quantityText);
         } catch (NumberFormatException e) {
-            edtQuantity.setError("Enter a valid quantity");
+            edtQuantity.setError(
+                    "Enter a valid quantity"
+            );
             edtQuantity.requestFocus();
             return;
         }
 
         if (quantity <= 0) {
-            edtQuantity.setError("Quantity must be greater than zero");
+            edtQuantity.setError(
+                    "Quantity must be greater than zero"
+            );
             edtQuantity.requestFocus();
+            return;
+        }
+
+        if (unit.isEmpty()) {
+            edtUnit.setError(
+                    "Enter a unit"
+            );
+            edtUnit.requestFocus();
+            return;
+        }
+
+        if (!expiryDate.isEmpty()
+                && !isValidDate(expiryDate)) {
+
+            edtExpiryDate.setError(
+                    "Use date format YYYY-MM-DD"
+            );
+            edtExpiryDate.requestFocus();
             return;
         }
 
@@ -102,9 +149,12 @@ public class AddIngredientActivity extends AppCompatActivity {
         );
 
         if (ingredientId == -1) {
-            long result = pantryDAO.addPantryItem(pantryItem);
+
+            long result =
+                    pantryDAO.addPantryItem(pantryItem);
 
             if (result != -1) {
+
                 Toast.makeText(
                         this,
                         "Ingredient saved successfully",
@@ -112,7 +162,9 @@ public class AddIngredientActivity extends AppCompatActivity {
                 ).show();
 
                 finish();
+
             } else {
+
                 Toast.makeText(
                         this,
                         "Unable to save ingredient",
@@ -121,11 +173,14 @@ public class AddIngredientActivity extends AppCompatActivity {
             }
 
         } else {
+
             pantryItem.setId(ingredientId);
 
-            int result = pantryDAO.updatePantryItem(pantryItem);
+            int result =
+                    pantryDAO.updatePantryItem(pantryItem);
 
             if (result > 0) {
+
                 Toast.makeText(
                         this,
                         "Ingredient updated successfully",
@@ -133,7 +188,9 @@ public class AddIngredientActivity extends AppCompatActivity {
                 ).show();
 
                 finish();
+
             } else {
+
                 Toast.makeText(
                         this,
                         "Unable to update ingredient",
@@ -142,4 +199,29 @@ public class AddIngredientActivity extends AppCompatActivity {
             }
         }
     }
+
+    private boolean isValidDate(String dateText) {
+
+        SimpleDateFormat dateFormat =
+                new SimpleDateFormat(
+                        "yyyy-MM-dd",
+                        Locale.getDefault()
+                );
+
+        dateFormat.setLenient(false);
+
+        try {
+
+            Date date =
+                    dateFormat.parse(dateText);
+
+            return date != null;
+
+        } catch (ParseException e) {
+
+            return false;
+        }
+    }
+
+
 }

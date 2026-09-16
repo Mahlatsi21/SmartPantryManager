@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,26 +19,30 @@ import model.PantryItem;
 
 public class PantryActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerPantry;
     private PantryDAO pantryDAO;
     private PantryAdapter pantryAdapter;
-    private TextView txtEmptyMessage;
+    private RecyclerView recyclerPantry;
+    private TextView txtEmptyPantry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantry);
 
+        pantryDAO = new PantryDAO(this);
+
         recyclerPantry = findViewById(R.id.recyclerPantry);
-        txtEmptyMessage = findViewById(R.id.txtEmptyMessage);
+        txtEmptyPantry = findViewById(R.id.txtEmptyPantry);
 
         Button btnAddIngredient = findViewById(R.id.btnAddIngredient);
         Button btnExpiringSoon = findViewById(R.id.btnExpiringSoon);
         Button btnRecipeSuggestions = findViewById(R.id.btnRecipeSuggestions);
+        Button btnSettings = findViewById(R.id.btnSettings);
+        TextView btnToolbarMenu = findViewById(R.id.btnToolbarMenu);
 
-        pantryDAO = new PantryDAO(this);
-
-        recyclerPantry.setLayoutManager(new LinearLayoutManager(this));
+        recyclerPantry.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
 
         btnAddIngredient.setOnClickListener(v -> {
             Intent intent = new Intent(
@@ -48,7 +53,7 @@ public class PantryActivity extends AppCompatActivity {
         });
 
         btnExpiringSoon.setOnClickListener(v -> {
-            loadExpiringSoonItems();
+            loadExpiringSoon();
         });
 
         btnRecipeSuggestions.setOnClickListener(v -> {
@@ -59,7 +64,65 @@ public class PantryActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        loadPantryItems();
+        btnSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    PantryActivity.this,
+                    SettingsActivity.class
+            );
+            startActivity(intent);
+        });
+
+        btnToolbarMenu.setOnClickListener(v -> {
+
+            PopupMenu popupMenu = new PopupMenu(
+                    PantryActivity.this,
+                    btnToolbarMenu
+            );
+
+            popupMenu.getMenu().add(
+                    "Recipe Suggestions"
+            );
+
+            popupMenu.getMenu().add(
+                    "Settings"
+            );
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+
+                String selectedItem =
+                        item.getTitle().toString();
+
+                if (selectedItem.equals(
+                        "Recipe Suggestions"
+                )) {
+
+                    Intent intent = new Intent(
+                            PantryActivity.this,
+                            RecipeSuggestionsActivity.class
+                    );
+
+                    startActivity(intent);
+
+                    return true;
+                }
+
+                if (selectedItem.equals("Settings")) {
+
+                    Intent intent = new Intent(
+                            PantryActivity.this,
+                            SettingsActivity.class
+                    );
+
+                    startActivity(intent);
+
+                    return true;
+                }
+
+                return false;
+            });
+
+            popupMenu.show();
+        });
     }
 
     @Override
@@ -69,30 +132,56 @@ public class PantryActivity extends AppCompatActivity {
     }
 
     private void loadPantryItems() {
-        List<PantryItem> pantryItems = pantryDAO.getAllPantryItems();
 
-        pantryAdapter = new PantryAdapter(pantryItems);
-        recyclerPantry.setAdapter(pantryAdapter);
+        List<PantryItem> pantryItems =
+                pantryDAO.getAllPantryItems();
 
-        txtEmptyMessage.setVisibility(View.GONE);
-    }
+        pantryAdapter = new PantryAdapter(
+                pantryItems
+        );
 
-    private void loadExpiringSoonItems() {
-        List<PantryItem> pantryItems = pantryDAO.getExpiringSoonItems();
-
-        pantryAdapter = new PantryAdapter(pantryItems);
         recyclerPantry.setAdapter(pantryAdapter);
 
         if (pantryItems.isEmpty()) {
-            txtEmptyMessage.setText(
-                    "No ingredients expiring within 7 days."
+
+            txtEmptyPantry.setText(
+                    "Your pantry is empty."
             );
-            txtEmptyMessage.setVisibility(View.VISIBLE);
+
+            txtEmptyPantry.setVisibility(View.VISIBLE);
+            recyclerPantry.setVisibility(View.GONE);
+
         } else {
-            txtEmptyMessage.setText(
-                    "Ingredients expiring within 7 days:"
+
+            txtEmptyPantry.setVisibility(View.GONE);
+            recyclerPantry.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void loadExpiringSoon() {
+
+        List<PantryItem> pantryItems =
+                pantryDAO.getExpiringSoonItems();
+
+        pantryAdapter = new PantryAdapter(
+                pantryItems
+        );
+
+        recyclerPantry.setAdapter(pantryAdapter);
+
+        if (pantryItems.isEmpty()) {
+
+            txtEmptyPantry.setText(
+                    "No ingredients are expiring soon."
             );
-            txtEmptyMessage.setVisibility(View.VISIBLE);
+
+            txtEmptyPantry.setVisibility(View.VISIBLE);
+            recyclerPantry.setVisibility(View.GONE);
+
+        } else {
+
+            txtEmptyPantry.setVisibility(View.GONE);
+            recyclerPantry.setVisibility(View.VISIBLE);
         }
     }
 }

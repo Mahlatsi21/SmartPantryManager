@@ -1,46 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+
+        <TextView
+            android:id="@+id/txtToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:text="Smart Pantry Manager"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/btnToolbarMenu"
+            android:layout_width="64dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="⋮"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"
+            android:contentDescription="More options" />
+
+    </FrameLayout>
 
     <TextView
-        android:id="@+id/txtPantryTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         android:text="My Pantry"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:paddingBottom="16dp" />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnAddIngredient"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="Add Ingredient" />
 
     <Button
         android:id="@+id/btnExpiringSoon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:text="Expiring Soon" />
 
     <Button
         android:id="@+id/btnRecipeSuggestions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:text="Recipe Suggestions" />
 
-    <TextView
-        android:id="@+id/txtEmptyMessage"
+    <Button
+        android:id="@+id/btnSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Settings" />
+
+    <TextView
+        android:id="@+id/txtEmptyPantry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:text=""
+        android:padding="16dp"
+        android:text="Your pantry is empty."
         android:textSize="16sp"
         android:visibility="gone" />
 
@@ -49,6 +94,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="16dp" />
+        android:padding="8dp" />
 
 </LinearLayout>
