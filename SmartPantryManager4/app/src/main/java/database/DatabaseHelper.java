@@ -1,4 +1,5 @@
-package database;
+
+        package database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "smart_pantry.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -235,6 +236,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new double[]{1, 1, 1},
                 new String[]{"kg", "item", "item"}
         );
+
+        addRecipeIfMissing(
+                db,
+                "Sweet Milk",
+                "Warm the milk gently and add the sugar. Stir until the sugar dissolves and serve.",
+                new String[]{"Milk", "Sugar"},
+                new double[]{250, 2},
+                new String[]{"ml", "item"}
+        );
     }
 
     private void addRecipeIfMissing(
@@ -398,5 +408,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 5) {
             insertSampleRecipes(db);
         }
+
+        if (oldVersion < 6) {
+            insertSampleRecipes(db);
+        }
     }
 }
+
