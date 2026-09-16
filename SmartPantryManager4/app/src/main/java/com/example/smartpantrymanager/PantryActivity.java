@@ -3,11 +3,17 @@ package com.example.smartpantrymanager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,23 +28,82 @@ public class PantryActivity extends AppCompatActivity {
     private PantryDAO pantryDAO;
     private PantryAdapter pantryAdapter;
     private RecyclerView recyclerPantry;
-    private TextView txtEmptyPantry;
+    private android.widget.TextView txtEmptyPantry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().clearFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
+
+        WindowCompat.setDecorFitsSystemWindows(
+                getWindow(),
+                false
+        );
+
         setContentView(R.layout.activity_pantry);
+
+        WindowInsetsControllerCompat windowInsetsController =
+                WindowCompat.getInsetsController(
+                        getWindow(),
+                        getWindow().getDecorView()
+                );
+
+        windowInsetsController.show(
+                WindowInsetsCompat.Type.statusBars()
+        );
+
+        windowInsetsController.setAppearanceLightStatusBars(
+                true
+        );
+
+        View pantryRoot = findViewById(R.id.pantryRoot);
+
+        ViewCompat.setOnApplyWindowInsetsListener(
+                pantryRoot,
+                (view, windowInsets) -> {
+
+                    Insets systemBars =
+                            windowInsets.getInsets(
+                                    WindowInsetsCompat.Type.systemBars()
+                            );
+
+                    view.setPadding(
+                            0,
+                            systemBars.top,
+                            0,
+                            systemBars.bottom
+                    );
+
+                    return windowInsets;
+                }
+        );
+
+        ViewCompat.requestApplyInsets(pantryRoot);
 
         pantryDAO = new PantryDAO(this);
 
         recyclerPantry = findViewById(R.id.recyclerPantry);
         txtEmptyPantry = findViewById(R.id.txtEmptyPantry);
 
-        Button btnAddIngredient = findViewById(R.id.btnAddIngredient);
-        Button btnExpiringSoon = findViewById(R.id.btnExpiringSoon);
-        Button btnRecipeSuggestions = findViewById(R.id.btnRecipeSuggestions);
-        Button btnSettings = findViewById(R.id.btnSettings);
-        TextView btnToolbarMenu = findViewById(R.id.btnToolbarMenu);
+        Button btnAddIngredient =
+                findViewById(R.id.btnAddIngredient);
+
+        Button btnExpiringSoon =
+                findViewById(R.id.btnExpiringSoon);
+
+        Button btnRecipeSuggestions =
+                findViewById(R.id.btnRecipeSuggestions);
+
+        Button btnSettings =
+                findViewById(R.id.btnSettings);
+
+        ImageButton btnToolbarMenu =
+                findViewById(R.id.btnToolbarMenu);
+
+        btnToolbarMenu.bringToFront();
 
         recyclerPantry.setLayoutManager(
                 new LinearLayoutManager(this)
@@ -128,6 +193,21 @@ public class PantryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        WindowInsetsControllerCompat windowInsetsController =
+                WindowCompat.getInsetsController(
+                        getWindow(),
+                        getWindow().getDecorView()
+                );
+
+        windowInsetsController.show(
+                WindowInsetsCompat.Type.statusBars()
+        );
+
+        windowInsetsController.setAppearanceLightStatusBars(
+                true
+        );
+
         loadPantryItems();
     }
 
